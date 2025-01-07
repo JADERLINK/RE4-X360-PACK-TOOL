@@ -74,7 +74,6 @@ namespace RE4_X360_PACK_TOOL
                         pack.BaseStream.Read(imagebytes, 0, (int)fileLength);
 
                         uint imagemagic = 0;
-
                         try
                         {
                             imagemagic = BitConverter.ToUInt32(imagebytes, 0);

@@ -13,10 +13,10 @@ namespace RE4_X360_PACK_TOOL
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-            Console.WriteLine("# RE4_X360_PACK_TOOL");
+            Console.WriteLine("# RE4 X360 PACK TOOL");
             Console.WriteLine("# By: JADERLINK");
             Console.WriteLine("# youtube.com/@JADERLINK");
-            Console.WriteLine("# VERSION 1.0.6 (2024-11-22)");
+            Console.WriteLine("# VERSION 1.0.7 (2025-01-07)");
 
             if (args.Length == 0)
             {
@@ -27,7 +27,15 @@ namespace RE4_X360_PACK_TOOL
             }
             else
             {
-                for (int i = 0; i < args.Length; i++)
+                bool usingBatFile = false;
+                int start = 0;
+                if (args[0].ToLowerInvariant() == "-bat")
+                {
+                    usingBatFile = true;
+                    start = 1;
+                }
+
+                for (int i = start; i < args.Length; i++)
                 {
                     if (File.Exists(args[i]))
                     {
@@ -45,7 +53,8 @@ namespace RE4_X360_PACK_TOOL
                         {
                             Console.WriteLine("File: " + info.Name);
 
-                            if (info.Extension.ToUpperInvariant() == ".PACK")
+                            if (info.Extension.ToUpperInvariant() == ".PACK"
+                             || info.Extension.ToUpperInvariant() == ".YZ2")
                             {
                                 try
                                 {
@@ -82,9 +91,16 @@ namespace RE4_X360_PACK_TOOL
                     }
 
                 }
+
+                Console.WriteLine("Finished!!!");
+
+                if (!usingBatFile)
+                {
+                    Console.WriteLine("Press any key to close the console.");
+                    Console.ReadKey();
+                }
             }
 
-            Console.WriteLine("Finished!!!");
         }
     }
 }
