@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using SimpleEndianBinaryIO;
 
-namespace RE4_X360_PACK_TOOL
+namespace RE4_PS3X360_PACK_TOOL
 {
     internal static class Extract
     {
@@ -24,12 +24,20 @@ namespace RE4_X360_PACK_TOOL
             Console.WriteLine("Magic: " + PackID.ToString("X8"));
             Console.WriteLine("Amount: " + Amount);
 
-            var idx = new FileInfo(Path.Combine(baseDiretory, baseName + ".idx360pack")).CreateText();
+            if (Amount > 0x01000000)
+            {
+                Console.WriteLine("Invalid PACK file!");
+                pack.Close();
+                return;
+            }
+
+            var idx = new FileInfo(Path.Combine(baseDiretory, baseName + ".idxbigpack")).CreateText();
             Directory.CreateDirectory(Path.Combine(baseDiretory, PackID.ToString("x8")));
 
-            idx.WriteLine("# RE4 X360 PACK TOOL");
+            idx.WriteLine("# RE4 PACK TOOL");
             idx.WriteLine("# By: JADERLINK");
             idx.WriteLine("# youtube.com/@JADERLINK");
+            idx.WriteLine("# github.com/JADERLINK");
             idx.WriteLine("MAGIC:" + PackID.ToString("X8"));
             idx.Close();
 
@@ -61,9 +69,9 @@ namespace RE4_X360_PACK_TOOL
 
                         pack.BaseStream.Position = offsets[i];
                         uint fileLength = pack.ReadUInt32();
-                        uint FF_FF_FF_FF = pack.ReadUInt32();
-                        uint ImagePackID = pack.ReadUInt32();
-                        uint Type = pack.ReadUInt32();
+                        _ = pack.ReadUInt32(); //FF_FF_FF_FF
+                        _ = pack.ReadUInt32(); //ImagePackID
+                        _ = pack.ReadUInt32(); //Type
 
                         if (fileLength > pack.BaseStream.Length - pack.BaseStream.Position)
                         {
@@ -73,25 +81,16 @@ namespace RE4_X360_PACK_TOOL
                         byte[] imagebytes = new byte[fileLength];
                         pack.BaseStream.Read(imagebytes, 0, (int)fileLength);
 
-                        uint imagemagic = 0;
-                        try
-                        {
-                            imagemagic = BitConverter.ToUInt32(imagebytes, 0);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                        
-                        string Extension = "error";
+                        uint imagemagic = 0xFFFFFFFF;
+                        try { imagemagic = BitConverter.ToUInt32(imagebytes, 0); } catch (Exception) { }
 
-                        if (imagemagic == 0x20534444)
-                        {
-                            Extension = "dds";
-                        }
-                        else if (imagemagic == 0x00020000 || imagemagic == 0x000A0000)
-                        {
-                            Extension = "tga";
-                        }
+                        string Extension = "error";
+                        if (imagemagic == 0x20534444) { Extension = "dds"; }
+                        else if (imagemagic == 0xFF010102) { Extension = "gtf"; }
+                        else if (imagemagic == 0x00020000 || imagemagic == 0x000A0000) { Extension = "tga"; }
+                        else if (imagemagic == 0x00150000) { Extension = "tga15"; }
+                        else if (imagemagic == 0x00030000) { Extension = "tga03"; }
+                        else if (imagemagic == 0x00000000) { Extension = "null"; }
 
                         File.WriteAllBytes(Path.Combine(baseDiretory, PackID.ToString("x8"), i.ToString("D4") + "." + Extension), imagebytes);
                         Console.WriteLine("Extracted file: " + PackID.ToString("x8") + "\\" + i.ToString("D4") + "." + Extension);

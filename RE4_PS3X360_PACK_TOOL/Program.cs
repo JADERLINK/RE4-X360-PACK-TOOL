@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace RE4_X360_PACK_TOOL
+namespace RE4_PS3X360_PACK_TOOL
 {
     internal class Program
     {
@@ -13,15 +13,16 @@ namespace RE4_X360_PACK_TOOL
         {
             System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-            Console.WriteLine("# RE4 X360 PACK TOOL");
+            Console.WriteLine("# RE4 PS3X360 PACK TOOL");
             Console.WriteLine("# By: JADERLINK");
             Console.WriteLine("# youtube.com/@JADERLINK");
-            Console.WriteLine("# VERSION 1.0.7 (2025-01-07)");
+            Console.WriteLine("# github.com/JADERLINK");
+            Console.WriteLine("# VERSION 1.0.8 (2025-01-31)");
 
             if (args.Length == 0)
             {
                 Console.WriteLine("For more information read:");
-                Console.WriteLine("https://github.com/JADERLINK/RE4-X360-PACK-TOOL");
+                Console.WriteLine("https://github.com/JADERLINK/RE4-PS3X360-PACK-TOOL");
                 Console.WriteLine("Press any key to close the console.");
                 Console.ReadKey();
             }
@@ -53,8 +54,7 @@ namespace RE4_X360_PACK_TOOL
                         {
                             Console.WriteLine("File: " + info.Name);
 
-                            if (info.Extension.ToUpperInvariant() == ".PACK"
-                             || info.Extension.ToUpperInvariant() == ".YZ2")
+                            if (info.Name.ToUpperInvariant().EndsWith(".PACK") || info.Name.ToUpperInvariant().EndsWith(".PACK.YZ2"))
                             {
                                 try
                                 {
@@ -66,7 +66,7 @@ namespace RE4_X360_PACK_TOOL
                                 }
 
                             }
-                            else if (info.Extension.ToUpperInvariant() == ".IDX360PACK")
+                            else if (info.Extension.ToUpperInvariant() == ".IDXBIGPACK")
                             {
                                 try
                                 {

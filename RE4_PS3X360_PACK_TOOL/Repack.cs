@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using SimpleEndianBinaryIO;
 
-namespace RE4_X360_PACK_TOOL
+namespace RE4_PS3X360_PACK_TOOL
 {
     internal static class Repack
     {
@@ -99,12 +99,23 @@ namespace RE4_X360_PACK_TOOL
 
                         while (asFile)
                         {
+                            string gtfpath = Path.Combine(ImageFolder, iCount.ToString("D4") + ".gtf");
                             string ddspath = Path.Combine(ImageFolder, iCount.ToString("D4") + ".dds");
                             string tgapath = Path.Combine(ImageFolder, iCount.ToString("D4") + ".tga");
+                            string tga03path = Path.Combine(ImageFolder, iCount.ToString("D4") + ".tga03");
+                            string tga15path = Path.Combine(ImageFolder, iCount.ToString("D4") + ".tga15");
                             string empty = Path.Combine(ImageFolder, iCount.ToString("D4") + ".empty");
                             string reference = Path.Combine(ImageFolder, iCount.ToString("D4") + ".reference");
+                            string _null = Path.Combine(ImageFolder, iCount.ToString("D4") + ".null");
 
-                            if (File.Exists(ddspath) || File.Exists(tgapath) || File.Exists(empty) || File.Exists(reference))
+                            if (File.Exists(gtfpath)
+                                || File.Exists(ddspath)
+                                || File.Exists(tgapath)
+                                || File.Exists(tga03path)
+                                || File.Exists(tga15path)
+                                || File.Exists(empty)
+                                || File.Exists(reference)
+                                || File.Exists(_null))
                             {
                                 iCount++;
                             }
@@ -120,7 +131,7 @@ namespace RE4_X360_PACK_TOOL
                         packFile.Write(iCount);
 
                         //header calculo
-                        uint headerLength = ((iCount + 2) * 4); //diferença entre as tools
+                        uint headerLength = (iCount + 2) * 4; //diferença entre as tools
                         uint line = headerLength / 16;
                         uint rest = headerLength % 16;
                         if (rest != 0)
@@ -139,18 +150,20 @@ namespace RE4_X360_PACK_TOOL
 
                         for (int i = 0; i < iCount; i++)
                         {
-                            string ddspatch = Path.Combine(ImageFolder, i.ToString("D4") + ".dds");
-                            string tgapatch = Path.Combine(ImageFolder, i.ToString("D4") + ".tga");
+                            string gtfpath = Path.Combine(ImageFolder, i.ToString("D4") + ".gtf");
+                            string ddspath = Path.Combine(ImageFolder, i.ToString("D4") + ".dds");
+                            string tgapath = Path.Combine(ImageFolder, i.ToString("D4") + ".tga");
+                            string tga03path = Path.Combine(ImageFolder, i.ToString("D4") + ".tga03");
+                            string tga15path = Path.Combine(ImageFolder, i.ToString("D4") + ".tga15");
+                            string _null = Path.Combine(ImageFolder, i.ToString("D4") + ".null");
 
                             FileInfo imageFile = null;
-                            if (File.Exists(ddspatch))
-                            {
-                                imageFile = new FileInfo(ddspatch);
-                            }
-                            else if (File.Exists(tgapatch))
-                            {
-                                imageFile = new FileInfo(tgapatch);
-                            }
+                                 if (File.Exists(gtfpath))   { imageFile = new FileInfo(gtfpath); }
+                            else if (File.Exists(ddspath))   { imageFile = new FileInfo(ddspath); }
+                            else if (File.Exists(tga03path)) { imageFile = new FileInfo(tga03path); }
+                            else if (File.Exists(tga15path)) { imageFile = new FileInfo(tga15path); }
+                            else if (File.Exists(tgapath))   { imageFile = new FileInfo(tgapath); }
+                            else if (File.Exists(_null))     { imageFile = new FileInfo(_null); }
 
                             if (imageFile != null)
                             {
@@ -165,14 +178,11 @@ namespace RE4_X360_PACK_TOOL
                                 packFile.Write(0xFFFFFFFF);
                                 packFile.Write(magic);
 
-                                if (imageFile.Extension.ToUpperInvariant().Contains("DDS"))
-                                {
-                                    packFile.Write((uint)1, Endianness.LittleEndian);
-                                }
+                                string ext = imageFile.Extension.ToUpperInvariant();
+                                if (ext.Contains("DDS") || ext.Contains("GTF"))
+                                { packFile.Write((uint)1, Endianness.LittleEndian); }
                                 else
-                                {
-                                    packFile.Write((uint)0, Endianness.LittleEndian);
-                                }
+                                { packFile.Write((uint)0, Endianness.LittleEndian); }
 
                                 var fileStream = imageFile.OpenRead();
                                 fileStream.CopyTo(packFile.BaseStream);

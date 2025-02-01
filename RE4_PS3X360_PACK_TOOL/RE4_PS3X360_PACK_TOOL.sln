@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.35229.62
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RE4_X360_PACK_TOOL", "RE4_X360_PACK_TOOL.csproj", "{F4B0D362-7814-4234-84B8-31D8941D338F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RE4_PS3X360_PACK_TOOL", "RE4_PS3X360_PACK_TOOL.csproj", "{F4B0D362-7814-4234-84B8-31D8941D338F}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleEndianBinaryIO", "SimpleEndianBinaryIO\SimpleEndianBinaryIO.shproj", "{5DDB0D8F-D1EA-479F-8FAC-BE2B5C6BAB65}"
 EndProject
